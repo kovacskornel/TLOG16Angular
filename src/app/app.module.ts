@@ -10,6 +10,16 @@ import { ApiService } from './shared';
 import { routing } from './app.routing';
 
 import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
+import { PagerService } from './shared/services/pager.service';
+import { WeekService } from './shared/services/week.service';
+import { TaskListComponent } from './task-list/task-list.component';
+import { CalendarComponent } from './calendar/calendar.component';
+import { SimpleDayComponent } from './calendar/week/simple-day/simple-day.component';
+import { WorkdayComponent } from './calendar/week/workday/workday.component';
+import { WeekComponent } from './calendar/week/week.component';
+import { MonthlyStatisticComponent } from './calendar/monthly-statistic/monthly-statistic.component';
+import { DailyStatisticComponent } from './task-list/daily-statistic/daily-statistic.component';
+import { PagerComponent } from './calendar/pager/pager.component';
 
 @NgModule({
   imports: [
@@ -21,10 +31,20 @@ import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
   declarations: [
     AppComponent,
     HomeComponent,
-    AboutComponent
+    AboutComponent,
+    TaskListComponent,
+    CalendarComponent,
+    SimpleDayComponent,
+    WorkdayComponent,
+    WeekComponent,
+    MonthlyStatisticComponent,
+    DailyStatisticComponent,
+    PagerComponent,
   ],
   providers: [
-    ApiService
+    ApiService,
+    WeekService,
+    PagerService,
   ],
   bootstrap: [AppComponent]
 })

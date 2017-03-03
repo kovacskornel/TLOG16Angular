@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 
-import { ApiService } from './shared';
-
 import '../style/app.scss';
 
 @Component({
@@ -10,10 +8,13 @@ import '../style/app.scss';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  url = 'https://github.com/preboot/angular2-webpack';
-  title: string;
+  title = 'TLOG angular webpack';
 
-  constructor(private api: ApiService) {
-    this.title = this.api.title;
+  static getColor(n: number) {
+    if (n >= 0) {
+      return 'green';
+    } else {
+      return 'red';
+    }
   }
 }
