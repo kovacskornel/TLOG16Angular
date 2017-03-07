@@ -9,6 +9,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { WorkDayRB } from '../classes/workDayRB';
 import { StartTaskRB } from '../classes/startTaskRB';
+import { Day } from '../classes/day';
 
 @Injectable()
 export class WeekService {
@@ -28,7 +29,7 @@ export class WeekService {
 
     urlAddWorkDay = 'http://localhost:9080/timelogger/workmonths/workdays';
 
-    urlGetTasks = 'http://localhost:9080/timelogger/workmonths/2017/3/1';
+    urlGetTasks = 'http://localhost:9080/timelogger/workmonths/';
     urlStartTask = 'http://localhost:9080/timelogger/workmonths/workdays/tasks/start';
 
     constructor (private http: Http) {}
@@ -39,8 +40,10 @@ export class WeekService {
             .catch(this.handleError);
     }
 
-    getTasks() {
-        return this.http.get(this. urlGetTasks, this.options)
+    getTasks(day: Day) {
+        let url = this. urlGetTasks + day.year + '/' + (day.month + 1) + '/' + day.day;
+        // console.log(url);
+        return this.http.get(url, this.options)
             .map(this.extractDataText)
             .catch(this.handleError);
     }

@@ -1,5 +1,3 @@
-import { Task } from './task';
-
 export class Day {
   type: string; // empty, simple, work
   year: number;
@@ -8,7 +6,5 @@ export class Day {
   requiredWorkMinutes = 0;
   minutes = 0;
   extraMinutes = 0;
-  tasks: Task[] = [];
-
-  getDate() { return this.year + '-' + this.month + '-' + this.day; }
+  tasks: any[] = [];
 }

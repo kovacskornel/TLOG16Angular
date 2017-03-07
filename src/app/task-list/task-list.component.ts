@@ -1,7 +1,6 @@
 import 'rxjs/add/operator/switchMap';
 import { Component, OnInit } from '@angular/core';
 import { Day } from '../shared/classes/day';
-import { Task } from '../shared/classes/task';
 import { PagerService } from '../shared/services/pager.service';
 import { WeekService } from '../shared/services/week.service';
 import { StartTaskRB } from '../shared/classes/startTaskRB';
@@ -13,7 +12,7 @@ import { StartTaskRB } from '../shared/classes/startTaskRB';
 
 export class TaskListComponent implements OnInit {
   day: Day;
-  selectedTask: Task;
+  selectedTask: any;
 
   constructor(
       private pagerService: PagerService,
@@ -22,16 +21,21 @@ export class TaskListComponent implements OnInit {
 
   ngOnInit() {
     this.day = this.pagerService.selectedDay;
+
+    if (this.day) {
+      this.weekService.getTasks(this.day).subscribe(data => this.getTasks(data));
+    }
+  }
+
+  getTasks(jsonData: string) {
+    // console.log(jsonData);
+    this.day.tasks = JSON.parse(jsonData);
   }
 
   addTask(id: string) {
     if (!id)  {
       return;
     }
-
-    let t = new Task();
-    t.id = id;
-    this.day.tasks.push(t);
 
     let startTask = new StartTaskRB();
     startTask.year = this.day.year;
@@ -42,7 +46,7 @@ export class TaskListComponent implements OnInit {
     this.weekService.startTask(startTask);
   }
 
-  deleteTask(task: Task) {
+  deleteTask(task: any) {
     this.day.tasks = this.day.tasks.filter(t => t !== task);
     if (this.selectedTask === task) {
       this.selectedTask = null;
@@ -64,7 +68,7 @@ export class TaskListComponent implements OnInit {
     this.selectedTask.endMinute = +endMinute;
   }
 
-  onSelect(t: Task): void {
+  onSelect(t: any): void {
     this.selectedTask = t;
   }
 }

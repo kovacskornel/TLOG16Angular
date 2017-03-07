@@ -12,16 +12,23 @@
     </div>
   </div>
   <div *ngFor="let t of day.tasks" (click)="onSelect(t)">
-    {{t.id}}, {{t.comment}}, {{t.startHour}}:{{t.startMinute}}-{{t.endHour}}:{{t.endMinute}} <button (click)="deleteTask(t)">x</button>
+    {{t.taskId}}, {{t.comment}},
+    <label *ngIf="t.startTime">{{t.startTime.hour}}:{{t.startTime.minute}}</label>-
+    <label *ngIf="t.endTime">{{t.endTime.hour}}:{{t.endTime.minute}}</label>
+    <button (click)="deleteTask(t)">x</button>
   </div>
   <div *ngIf="selectedTask">
-    Selected task: {{selectedTask.id}}<br>
-    <label>Id: <input value="{{selectedTask.id}}" #id /></label><br>
+    Selected task: {{selectedTask.taskId}}<br>
+    <label>Id: <input value="{{selectedTask.taskId}}" #id /></label><br>
     <label>Comment: <input value="{{selectedTask.comment}}" #comment /></label><br>
-    <label>Start hour: <input value="{{selectedTask.startHour}}" #startHour /></label><br>
-    <label>Start minute: <input value="{{selectedTask.startMinute}}" #startMinute /></label><br>
-    <label>End hour: <input value="{{selectedTask.endHour}}" #endHour /></label><br>
-    <label>End minute: <input value="{{selectedTask.endMinute}}" #endMinute /></label><br>
+    <div *ngIf="selectedTask.startTime">
+      <label>Start hour: <input value="{{selectedTask.startTime.hour}}" #startHour /></label><br>
+      <label>Start minute: <input value="{{selectedTask.startTime.minute}}" #startMinute /></label><br>
+    </div>
+    <div *ngIf="selectedTask.endTime">
+      <label>End hour: <input value="{{selectedTask.endTime.hour}}" #endHour /></label><br>
+      <label>End minute: <input value="{{selectedTask.endTime.minute}}" #endMinute /></label><br>
+    </div>
     <button (click)="modifyTask(id.value, comment.value, startHour.value, startMinute.value, endHour.value, endMinute.value)">Modify</button>
   </div>
   <my-daily-statistic [day]="day"></my-daily-statistic>
