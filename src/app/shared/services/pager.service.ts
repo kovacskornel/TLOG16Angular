@@ -17,8 +17,10 @@ export class PagerService {
 
     constructor(private weekService: WeekService) { }
 
-    createWeeks() {
+    createWeeks(jsonData: string) {
         this.actualMonth = this.monthsOfYear[this.month];
+
+        let workdays: any[] = JSON.parse(jsonData);
 
         let firstDay = new Date(this.year, this.month, 1);
         let startingDay = (firstDay.getDay() + 6) % 7;
@@ -37,6 +39,15 @@ export class PagerService {
         for (let i = 1; i <= dayCount; i++) {
             d = new Day();
             d.type = 'simple';
+            for (let wd of workdays) {
+                if (wd.actualDay.dayOfMonth === i) {
+                    d.type = 'work';
+                    d.extraMinutes = wd.extraMinPerDay;
+                    d.requiredWorkMinutes = wd.requiredMinPerDay;
+                    d.minutes = wd.sumMinPerDay;
+                }
+            }
+
             d.day = i;
             d.month = this.month;
             d.year = this.year;
@@ -65,7 +76,8 @@ export class PagerService {
             this.month = 11;
             this.year--;
         }
-        this.createWeeks();
+
+        this.refresh();
     }
 
     nextMonth() {
@@ -73,7 +85,8 @@ export class PagerService {
         if (this.month === 0) {
             this.year++;
         }
-        this.createWeeks();
+
+        this.refresh();
     }
 
     getMonthDayCount() {
@@ -84,12 +97,16 @@ export class PagerService {
         return this.dayInMonth[this.month];
     }
 
+    refresh() {
+        this.weekService.getMonth(this.year, this.month + 1).subscribe(data => this.createWeeks(data));
+    }
+
     init() {
         if (this.weekService.weeks.length === 0) {
             let date = new Date();
             this.year = date.getFullYear();
             this.month = date.getMonth();
-            this.createWeeks();
+            this.refresh();
         } else {
             this.actualMonth = this.monthsOfYear[this.month];
         }

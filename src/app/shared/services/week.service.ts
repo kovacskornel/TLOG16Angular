@@ -7,7 +7,8 @@ import { Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import { WorkDayRB } from '../classes/WorkDayRB';
+import { WorkDayRB } from '../classes/workDayRB';
+import { StartTaskRB } from '../classes/startTaskRB';
 
 @Injectable()
 export class WeekService {
@@ -19,35 +20,50 @@ export class WeekService {
     extraMinutes: number;
 
     headers = new Headers({ 'Content-Type': 'application/json' });
+
     options = new RequestOptions({ headers: this.headers });
 
     urlGetMonths = 'http://localhost:9080/timelogger/workmonths/';
     urlDeleteAll = 'http://localhost:9080/timelogger/workmonths/deleteall';
+
     urlAddWorkDay = 'http://localhost:9080/timelogger/workmonths/workdays';
+
+    urlGetTasks = 'http://localhost:9080/timelogger/workmonths/2017/3/1';
+    urlStartTask = 'http://localhost:9080/timelogger/workmonths/workdays/tasks/start';
 
     constructor (private http: Http) {}
 
-    getMonths () {
-        return this.http.get(this.urlGetMonths)
-            .map(this.extractData)
+    getMonth(year: number, month: number) {
+        return this.http.get(this.urlGetMonths + year + '/' + month)
+            .map(this.extractDataText)
+            .catch(this.handleError);
+    }
+
+    getTasks() {
+        return this.http.get(this. urlGetTasks, this.options)
+            .map(this.extractDataText)
             .catch(this.handleError);
     }
 
     deleteAll() {
-        this.http.put(this.urlDeleteAll, this.options)
-            .catch(this.handleError)
-            .subscribe();
+        return this.http.put(this.urlDeleteAll, this.options)
+            .catch(this.handleError);
     }
 
     addWorkDay(workDay: WorkDayRB) {
-        this.http.post(this.urlAddWorkDay, JSON.stringify(workDay), this.options)
+        return this.http.post(this.urlAddWorkDay, JSON.stringify(workDay), this.options)
+            .map(this.extractDataText)
+            .catch(this.handleError);
+    }
+
+    startTask(startTask: StartTaskRB) {
+        this.http.post(this.urlStartTask, JSON.stringify(startTask), this.options)
             .catch(this.handleError)
             .subscribe();
     }
 
-    private extractData(res: Response) {
-        let body = res.json();
-        return body.json || { };
+    private extractDataText(res: Response) {
+        return res.text() || { };
     }
 
     private handleError (error: Response | any) {

@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { Day } from '../shared/classes/day';
 import { Task } from '../shared/classes/task';
 import { PagerService } from '../shared/services/pager.service';
+import { WeekService } from '../shared/services/week.service';
+import { StartTaskRB } from '../shared/classes/startTaskRB';
 
 @Component({
   selector: 'my-task-list',
@@ -13,13 +15,16 @@ export class TaskListComponent implements OnInit {
   day: Day;
   selectedTask: Task;
 
-  constructor(private pagerService: PagerService) { }
+  constructor(
+      private pagerService: PagerService,
+      private weekService: WeekService,
+  ) { }
 
   ngOnInit() {
     this.day = this.pagerService.selectedDay;
   }
 
-  add(id: string) {
+  addTask(id: string) {
     if (!id)  {
       return;
     }
@@ -27,6 +32,14 @@ export class TaskListComponent implements OnInit {
     let t = new Task();
     t.id = id;
     this.day.tasks.push(t);
+
+    let startTask = new StartTaskRB();
+    startTask.year = this.day.year;
+    startTask.month = this.day.month + 1;
+    startTask.day = this.day.day;
+    startTask.taskId = id;
+    startTask.startTime = '9:30';
+    this.weekService.startTask(startTask);
   }
 
   deleteTask(task: Task) {

@@ -8,7 +8,7 @@
     </div><br>
     <div>
       <label>Task id: <input #taskId /></label>
-      <button (click)="add(taskId.value); taskId.value=''">Add</button>
+      <button (click)="addTask(taskId.value); taskId.value=''">Add</button>
     </div>
   </div>
   <div *ngFor="let t of day.tasks" (click)="onSelect(t)">
