@@ -10,6 +10,7 @@ import 'rxjs/add/operator/map';
 import { WorkDayRB } from '../classes/workDayRB';
 import { StartTaskRB } from '../classes/startTaskRB';
 import { Day } from '../classes/day';
+import { DeleteTaskRB } from '../classes/DeleteTaskRB';
 
 @Injectable()
 export class WeekService {
@@ -21,16 +22,21 @@ export class WeekService {
     extraMinutes: number;
 
     headers = new Headers({ 'Content-Type': 'application/json' });
-
     options = new RequestOptions({ headers: this.headers });
 
-    urlGetMonths = 'http://localhost:9080/timelogger/workmonths/';
-    urlDeleteAll = 'http://localhost:9080/timelogger/workmonths/deleteall';
+    ip = 'localhost';
+    port = 9080;
 
-    urlAddWorkDay = 'http://localhost:9080/timelogger/workmonths/workdays';
+    urlBase = 'http://' + this.ip + ':' + this.port;
 
-    urlGetTasks = 'http://localhost:9080/timelogger/workmonths/';
-    urlStartTask = 'http://localhost:9080/timelogger/workmonths/workdays/tasks/start';
+    urlGetMonths = this.urlBase + '/timelogger/workmonths/';
+    urlDeleteAll = this.urlBase + '/timelogger/workmonths/deleteall';
+
+    urlAddWorkDay = this.urlBase + '/timelogger/workmonths/workdays';
+
+    urlGetTasks = this.urlBase + '/timelogger/workmonths/';
+    urlStartTask = this.urlBase + '/timelogger/workmonths/workdays/tasks/start';
+    urlDeleteTask = this.urlBase + '/timelogger/workmonths/workdays/tasks/delete';
 
     constructor (private http: Http) {}
 
@@ -40,29 +46,30 @@ export class WeekService {
             .catch(this.handleError);
     }
 
-    getTasks(day: Day) {
-        let url = this. urlGetTasks + day.year + '/' + (day.month + 1) + '/' + day.day;
-        // console.log(url);
-        return this.http.get(url, this.options)
-            .map(this.extractDataText)
-            .catch(this.handleError);
-    }
-
-    deleteAll() {
-        return this.http.put(this.urlDeleteAll, this.options)
-            .catch(this.handleError);
-    }
-
     addWorkDay(workDay: WorkDayRB) {
         return this.http.post(this.urlAddWorkDay, JSON.stringify(workDay), this.options)
             .map(this.extractDataText)
             .catch(this.handleError);
     }
 
+    getTasks(day: Day) {
+        let url = this. urlGetTasks + day.year + '/' + (day.month + 1) + '/' + day.day;
+        return this.http.get(url, this.options)
+            .map(this.extractDataText)
+            .catch(this.handleError);
+    }
     startTask(startTask: StartTaskRB) {
-        this.http.post(this.urlStartTask, JSON.stringify(startTask), this.options)
-            .catch(this.handleError)
-            .subscribe();
+        return this.http.post(this.urlStartTask, JSON.stringify(startTask), this.options)
+            .catch(this.handleError);
+    }
+    deleteTask(deleteTask: DeleteTaskRB) {
+        return this.http.put(this.urlDeleteTask, JSON.stringify(deleteTask), this.options)
+            .catch(this.handleError);
+    }
+
+    deleteAll() {
+        return this.http.put(this.urlDeleteAll, this.options)
+            .catch(this.handleError);
     }
 
     private extractDataText(res: Response) {

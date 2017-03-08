@@ -4,6 +4,7 @@ import { Day } from '../shared/classes/day';
 import { PagerService } from '../shared/services/pager.service';
 import { WeekService } from '../shared/services/week.service';
 import { StartTaskRB } from '../shared/classes/startTaskRB';
+import { DeleteTaskRB } from '../shared/classes/DeleteTaskRB';
 
 @Component({
   selector: 'my-task-list',
@@ -22,14 +23,7 @@ export class TaskListComponent implements OnInit {
   ngOnInit() {
     this.day = this.pagerService.selectedDay;
 
-    if (this.day) {
-      this.weekService.getTasks(this.day).subscribe(data => this.getTasks(data));
-    }
-  }
-
-  getTasks(jsonData: string) {
-    // console.log(jsonData);
-    this.day.tasks = JSON.parse(jsonData);
+    this.refreshTasks();
   }
 
   addTask(id: string) {
@@ -43,14 +37,28 @@ export class TaskListComponent implements OnInit {
     startTask.day = this.day.day;
     startTask.taskId = id;
     startTask.startTime = '9:30';
-    this.weekService.startTask(startTask);
+    this.weekService.startTask(startTask).subscribe(() => this.refreshTasks());
   }
 
   deleteTask(task: any) {
-    this.day.tasks = this.day.tasks.filter(t => t !== task);
+    if (!task) {
+      return;
+    }
+
     if (this.selectedTask === task) {
       this.selectedTask = null;
     }
+
+    let deleteTask = new DeleteTaskRB();
+    deleteTask.year = this.day.year;
+    deleteTask.month = this.day.month + 1;
+    deleteTask.day = this.day.day;
+    deleteTask.taskId = task.taskId;
+    if (task.startTime) {
+      deleteTask.startTime = task.startTime.hour + ':' + task.startTime.minute;
+    }
+
+    this.weekService.deleteTask(deleteTask).subscribe(() => this.refreshTasks());
   }
 
   modifyDay(minutes: number) {
@@ -66,6 +74,16 @@ export class TaskListComponent implements OnInit {
     this.selectedTask.startMinute = +startMinute;
     this.selectedTask.endHour = +endHour;
     this.selectedTask.endMinute = +endMinute;
+  }
+
+  refreshTasks() {
+    if (this.day) {
+      this.weekService.getTasks(this.day).subscribe(data => this.getTasks(data));
+    }
+  }
+
+  getTasks(jsonData: string) {
+    this.day.tasks = JSON.parse(jsonData);
   }
 
   onSelect(t: any): void {
