@@ -5,6 +5,7 @@ import { PagerService } from '../shared/services/pager.service';
 import { WeekService } from '../shared/services/week.service';
 import { StartTaskRB } from '../shared/classes/startTaskRB';
 import { DeleteTaskRB } from '../shared/classes/DeleteTaskRB';
+import { ModifyTaskRB } from '../shared/classes/ModifyTaskRB';
 
 @Component({
   selector: 'my-task-list',
@@ -67,13 +68,34 @@ export class TaskListComponent implements OnInit {
     this.day.extraMinutes = this.day.minutes - this.day.requiredWorkMinutes;
   }
 
-  modifyTask(id: string, comment: string, startHour: string, startMinute: string, endHour: string, endMinute: string) {
-    this.selectedTask.id = id;
+  modifyTask(taskId: string, comment: string, startHour: string, startMinute: string, endHour: string, endMinute: string) {
+
+    let modifyTask = new ModifyTaskRB();
+    modifyTask.year = this.day.year;
+    modifyTask.month = this.day.month + 1;
+    modifyTask.day = this.day.day;
+    modifyTask.taskId = this.selectedTask.taskId;
+
+    modifyTask.newTaskId = taskId;
+    modifyTask.newComment = comment;
+
+    if (this.selectedTask.startTime) {
+      modifyTask.startTime = this.selectedTask.startTime.hour + ':' + this.selectedTask.startTime.minute;
+      modifyTask.newStartTime = startHour + ':' + startMinute;
+    }
+    if (this.selectedTask.endTime) {
+      modifyTask.newEndTime = endHour + ':' + endMinute;
+    }
+
+    this.weekService.modifyTask(modifyTask).subscribe(() => this.refreshTasks());
+    this.selectedTask = null;
+
+    /* this.selectedTask.id = taskId;
     this.selectedTask.comment = comment;
     this.selectedTask.startHour = +startHour;
     this.selectedTask.startMinute = +startMinute;
     this.selectedTask.endHour = +endHour;
-    this.selectedTask.endMinute = +endMinute;
+    this.selectedTask.endMinute = +endMinute;*/
   }
 
   refreshTasks() {

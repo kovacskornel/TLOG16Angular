@@ -21,17 +21,20 @@
   </div>
   <div *ngIf="selectedTask">
     Selected task: {{selectedTask.taskId}}<br>
-    <label>Id: <input value="{{selectedTask.taskId}}" #id /></label><br>
+    <label>Task id: <input value="{{selectedTask.taskId}}" #taskId /></label><br>
     <label>Comment: <input value="{{selectedTask.comment}}" #comment /></label><br>
     <div *ngIf="selectedTask.startTime">
       <label>Start hour: <input value="{{selectedTask.startTime.hour}}" #startHour /></label><br>
       <label>Start minute: <input value="{{selectedTask.startTime.minute}}" #startMinute /></label><br>
+      <div *ngIf="selectedTask.endTime">
+        <label>End hour: <input value="{{selectedTask.endTime.hour}}" #endHour /></label><br>
+        <label>End minute: <input value="{{selectedTask.endTime.minute}}" #endMinute /></label><br>
+        <button (click)="modifyTask(taskId.value, comment.value, startHour.value, startMinute.value, endHour.value, endMinute.value)">Modify</button>
+      </div>
+      <div *ngIf="!selectedTask.endTime">
+        <button (click)="modifyTask(taskId.value, comment.value, startHour.value, startMinute.value, '', '')">Modify</button>
+      </div>
     </div>
-    <div *ngIf="selectedTask.endTime">
-      <label>End hour: <input value="{{selectedTask.endTime.hour}}" #endHour /></label><br>
-      <label>End minute: <input value="{{selectedTask.endTime.minute}}" #endMinute /></label><br>
-    </div>
-    <button (click)="modifyTask(id.value, comment.value, startHour.value, startMinute.value, endHour.value, endMinute.value)">Modify</button>
   </div>
   <my-daily-statistic [day]="day"></my-daily-statistic>
 </div>
