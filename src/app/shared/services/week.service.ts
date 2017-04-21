@@ -12,69 +12,67 @@ import { StartTaskRB } from '../classes/startTaskRB';
 import { Day } from '../classes/day';
 import { DeleteTaskRB } from '../classes/DeleteTaskRB';
 import { ModifyTaskRB } from '../classes/ModifyTaskRB';
+import { FinishTaskRB } from '../classes/FinishTaskRB';
 
 @Injectable()
 export class WeekService {
     weeks: Week[] = [];
-
-    workdays: number;
-    reqWorkMinutes: number;
     minutes: number;
     extraMinutes: number;
 
-    headers = new Headers({ 'Content-Type': 'application/json' });
-    options = new RequestOptions({ headers: this.headers });
+    header = new Headers({ 'Content-Type': 'application/json' });
+    options = new RequestOptions({ headers: this.header });
 
-    ip = 'localhost';
-    port = 9080;
+    link= 'http://127.0.0.1:9080/timelogger/workmonths/';
 
-    urlBase = 'http://' + this.ip + ':' + this.port;
-
-    urlGetMonths = this.urlBase + '/timelogger/workmonths/';
-    urlDeleteAll = this.urlBase + '/timelogger/workmonths/deleteall';
-
-    urlAddWorkDay = this.urlBase + '/timelogger/workmonths/workdays';
-
-    urlGetTasks = this.urlBase + '/timelogger/workmonths/';
-    urlStartTask = this.urlBase + '/timelogger/workmonths/workdays/tasks/start';
-    urlModifyTask = this.urlBase + '/timelogger/workmonths/workdays/tasks/modify';
-    urlDeleteTask = this.urlBase + '/timelogger/workmonths/workdays/tasks/delete';
+    GetMonths = this.link;
+    DeleteAll = this.link + 'deleteall';
+    AddWorkDay = this.link + 'workdays';
+    GetTasks = this.GetMonths;
+    StartTask = this.link + 'workdays/tasks/start';
+    FinishTask = this.link + 'workdays/tasks/finish';
+    ModifyTask = this.link + 'workdays/tasks/modify';
+    DeleteTask = this.link + 'workdays/tasks/delete';
 
     constructor (private http: Http) {}
 
     getMonth(year: number, month: number) {
-        return this.http.get(this.urlGetMonths + year + '/' + month)
+        return this.http.get(this.GetMonths + year + '/' + month)
             .map(this.extractDataText)
             .catch(this.handleError);
     }
 
     addWorkDay(workDay: WorkDayRB) {
-        return this.http.post(this.urlAddWorkDay, JSON.stringify(workDay), this.options)
+        return this.http.post(this.AddWorkDay, JSON.stringify(workDay), this.options)
             .map(this.extractDataText)
             .catch(this.handleError);
     }
 
     getTasks(day: Day) {
-        let url = this. urlGetTasks + day.year + '/' + (day.month + 1) + '/' + day.day;
+        let url = this. GetTasks + day.year + '/' + (day.month + 1) + '/' + day.day;
         return this.http.get(url, this.options)
             .map(this.extractDataText)
             .catch(this.handleError);
     }
     startTask(startTask: StartTaskRB) {
-        return this.http.post(this.urlStartTask, JSON.stringify(startTask), this.options)
+        return this.http.post(this.StartTask, JSON.stringify(startTask), this.options)
+            .catch(this.handleError);
+    }
+    finishTask(finishTask: FinishTaskRB) {
+        return this.http.put(this.FinishTask, JSON.stringify(finishTask), this.options)
             .catch(this.handleError);
     }
     modifyTask(modifyTask: ModifyTaskRB) {
-        return this.http.put(this.urlModifyTask, JSON.stringify(modifyTask), this.options)
+        return this.http.put(this.ModifyTask, JSON.stringify(modifyTask), this.options)
             .catch(this.handleError);
     }
     deleteTask(deleteTask: DeleteTaskRB) {
-        return this.http.put(this.urlDeleteTask, JSON.stringify(deleteTask), this.options)
+        return this.http.put(this.DeleteTask, JSON.stringify(deleteTask), this.options)
             .catch(this.handleError);
     }
 
     deleteAll() {
-        return this.http.put(this.urlDeleteAll, this.options)
+        return this.http.put(this.DeleteAll, this.options)
             .catch(this.handleError);
     }
 
@@ -96,18 +94,12 @@ export class WeekService {
     }
 
     update() {
-        this.reqWorkMinutes = 0;
         this.minutes = 0;
         this.extraMinutes = 0;
-        this.workdays = 0;
-        for (let w of this.weeks) {
-            for (let d of w.days) {
-                this.reqWorkMinutes += d.requiredWorkMinutes;
-                this.minutes += d.minutes;
-                this.extraMinutes += d.extraMinutes;
-                if (d.type === 'work') {
-                    this.workdays++;
-                }
+        for (let week of this.weeks) {
+            for (let day of week.days) {
+                this.minutes += day.minutes;
+                this.extraMinutes += day.extraMinutes;
             }
         }
     }

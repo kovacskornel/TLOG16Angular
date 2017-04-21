@@ -16,9 +16,6 @@ export class CalendarComponent implements OnInit {
       private pagerService: PagerService,
   ) { }
 
-  deleteAll() {
-    this.weekService.deleteAll().subscribe(() => this.pagerService.refresh());
-  }
 
   ngOnInit(): void {
     this.pagerService.init();

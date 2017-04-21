@@ -1,6 +1,5 @@
-<ul class="title">{{pagerService.year}}</ul>
 <ul class="title">
-    <button (click)="previousMonth()">&#10094;</button>
-    {{pagerService.actualMonth}}
-    <button (click)="nextMonth()">&#10095;</button>
+    <button (click)="previousMonth()"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span></button>
+    {{pagerService.year}}-{{pagerService.month+1}}
+    <button (click)="nextMonth()"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></button>
 </ul>

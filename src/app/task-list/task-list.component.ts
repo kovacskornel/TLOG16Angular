@@ -4,6 +4,7 @@ import { Day } from '../shared/classes/day';
 import { PagerService } from '../shared/services/pager.service';
 import { WeekService } from '../shared/services/week.service';
 import { StartTaskRB } from '../shared/classes/startTaskRB';
+import { FinishTaskRB } from '../shared/classes/FinishTaskRB';
 import { DeleteTaskRB } from '../shared/classes/DeleteTaskRB';
 import { ModifyTaskRB } from '../shared/classes/ModifyTaskRB';
 
@@ -37,19 +38,34 @@ export class TaskListComponent implements OnInit {
     startTask.month = this.day.month + 1;
     startTask.day = this.day.day;
     startTask.taskId = id;
-    startTask.startTime = '9:30';
+    startTask.startTime = this.getTimeNow();
+
     this.weekService.startTask(startTask).subscribe(() => this.refreshTasks());
+  }
+
+  finishTask(task: any) {
+   if (!task) {
+      return;
+   }
+   let finishTask = new FinishTaskRB();
+   finishTask.year = this.day.year;
+   finishTask.month = this.day.month + 1;
+   finishTask.day = this.day.day;
+   finishTask.taskId = task.taskId;
+   if (task.startTime) {
+     finishTask.startTime = task.startTime.hour + ':' + task.startTime.minute;
+   }
+   finishTask.endTime = task.endTime;
+   this.weekService.finishTask(finishTask).subscribe(() => this.refreshTasks());
   }
 
   deleteTask(task: any) {
     if (!task) {
       return;
     }
-
     if (this.selectedTask === task) {
       this.selectedTask = null;
     }
-
     let deleteTask = new DeleteTaskRB();
     deleteTask.year = this.day.year;
     deleteTask.month = this.day.month + 1;
@@ -89,13 +105,6 @@ export class TaskListComponent implements OnInit {
 
     this.weekService.modifyTask(modifyTask).subscribe(() => this.refreshTasks());
     this.selectedTask = null;
-
-    /* this.selectedTask.id = taskId;
-    this.selectedTask.comment = comment;
-    this.selectedTask.startHour = +startHour;
-    this.selectedTask.startMinute = +startMinute;
-    this.selectedTask.endHour = +endHour;
-    this.selectedTask.endMinute = +endMinute;*/
   }
 
   refreshTasks() {
@@ -106,6 +115,16 @@ export class TaskListComponent implements OnInit {
 
   getTasks(jsonData: string) {
     this.day.tasks = JSON.parse(jsonData);
+  }
+
+  getTimeNow() {
+    let date = new Date();
+    let minutes = (date.getMinutes() - (date.getMinutes() % 15)) + '';
+    if (minutes === '0' || minutes === '') {
+      minutes = '00';
+    }
+
+    return date.getHours() + ':' + minutes;
   }
 
   onSelect(t: any): void {

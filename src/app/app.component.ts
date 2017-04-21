@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 
-import '../style/app.scss';
 
 @Component({
-  selector: 'my-app', // <my-app></my-app>
+  selector: 'my-app',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['../style/app.scss'],
 })
 export class AppComponent {
-  title = 'TLOG angular webpack';
+  title = 'TimeLogger';
 
   static getColor(n: number) {
     if (n >= 0) {

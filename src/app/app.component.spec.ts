@@ -6,7 +6,6 @@ import { ApiService } from './shared';
 import { AppComponent } from './app.component';
 
 describe('App', () => {
-  // provide our implementations or mocks to the dependency injector
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],

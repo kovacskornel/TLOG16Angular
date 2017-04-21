@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { AboutComponent } from './about/about.component';
 import { ApiService } from './shared';
 import { routing } from './app.routing';
 
@@ -15,6 +14,7 @@ import { WeekService } from './shared/services/week.service';
 import { TaskListComponent } from './task-list/task-list.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { SimpleDayComponent } from './calendar/week/simple-day/simple-day.component';
+import { AboutComponent } from './about/about.component';
 import { WorkdayComponent } from './calendar/week/workday/workday.component';
 import { WeekComponent } from './calendar/week/week.component';
 import { MonthlyStatisticComponent } from './calendar/monthly-statistic/monthly-statistic.component';

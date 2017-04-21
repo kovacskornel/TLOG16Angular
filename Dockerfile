@@ -1,5 +1,5 @@
 FROM infoslack/alpine-nginx:latest
-MAINTAINER Attila Herczog "aherczog@precognox.com"
+MAINTAINER Kovacs Kornel "kkovacs@precognox.com"
 RUN apk add --update openssl wget
 RUN wget --no-check-certificate https://github.com/jwilder/dockerize/releases/download/v0.2.0/dockerize-linux-amd64-v0.2.0.tar.gz
 RUN tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.2.0.tar.gz

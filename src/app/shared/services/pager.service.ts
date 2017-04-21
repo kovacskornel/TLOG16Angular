@@ -34,7 +34,7 @@ export class PagerService {
             days.push(d);
         }
 
-        let dayCount = this.getMonthDayCount();
+        let dayCount = this.getMonthStats();
         let w: Week;
         for (let i = 1; i <= dayCount; i++) {
             d = new Day();
@@ -43,7 +43,6 @@ export class PagerService {
                 if (wd.actualDay.dayOfMonth === i) {
                     d.type = 'work';
                     d.extraMinutes = wd.extraMinPerDay;
-                    d.requiredWorkMinutes = wd.requiredMinPerDay;
                     d.minutes = wd.sumMinPerDay;
                 }
             }
@@ -89,7 +88,7 @@ export class PagerService {
         this.refresh();
     }
 
-    getMonthDayCount() {
+    getMonthStats() {
         if (this.month === 1) {
             return ((this.year % 4 === 0 && this.year % 100 !== 0) || this.year % 400 === 0) ? 29 : 28;
         }

@@ -1,4 +1,4 @@
-export class FinishingTaskRB {
+export class FinishTaskRB {
     year: number;
     month: number;
     day: number;
